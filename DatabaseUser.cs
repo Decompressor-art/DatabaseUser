@@ -1,17 +1,51 @@
-name: .NET Core
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
-on: [push]
+namespace Decompression
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
 
-jobs:
-  build:
+        }
+       
+         
 
-    runs-on: ubuntu-latest
+            public void btnOK_Click(object sender, EventArgs e)
+        {
+                if (!string.IsNullOrWhiteSpace(loginTextBox.Text) && !string.IsNullOrWhiteSpace(passwordTextBox.Text))
+                    {
+                    var ops = new DatabaseUser("N10468000115\\SQLHUNTER", "demo");
+                    var loginResults = ops.SqlCredentialLogin(loginTextBox.Text, passwordTextBox.Text);
+                    if (loginResults)
+                      {
 
-    steps:
-    - uses: actions/checkout@v1
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 2.2.108
-    - name: Build with dotnet
-      run: dotnet build --configuration Release
+                        var successValue = ops.DoWork(passwordTextBox.Text, loginTextBox.Text);
+                        var workResult = string.IsNullOrWhiteSpace(successValue);
+                        
+                            if (workResult)
+                            {
+                                Hide();
+                                Form MW = new MainWindow();
+                                MW.ShowDialog();
+                            }
+                            else
+                            {
+                                MessageBox.Show(successValue);
+                            }
+                        
+                      }
+                    }
+        }
+    }
+}
